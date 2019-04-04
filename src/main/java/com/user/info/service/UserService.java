@@ -1,6 +1,5 @@
 package com.user.info.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,10 @@ import com.user.info.exception.UserException;
 import com.user.info.imgurservice.IImgurService;
 import com.user.info.model.Images;
 import com.user.info.model.User;
+import com.user.info.util.ApplicationConstants;
 import com.user.info.vo.ImgurDeleteResponseVO;
 import com.user.info.vo.ImgurResponseVO;
+import com.user.info.vo.UserInfoVO;
 
 @Service
 public class UserService implements IUserService {
@@ -36,35 +37,54 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public ImgurResponseVO uploadImage(MultipartFile file) {
+	public ImgurResponseVO uploadImage(MultipartFile file) throws UserException {
 		
-		System.out.println("in user service");
 		User user = null;
 		ImgurResponseVO imgurResponseVO= imgurService.uploadImage(file);
-		if(imgurResponseVO.getStatus().equals("200"))
-	     user =userRepo.findByUserName("sai");
-	    List<Images> images= new ArrayList<Images>();
+		if(imgurResponseVO.getStatus().equals(ApplicationConstants.SUCCESS_CODE)) {
+	    user =userRepo.findByUserName("sai");
+		List<Images> images= user.getImages();
 	    Images image = new Images();
 	    image.setImg_link(imgurResponseVO.getData().getLink());
+	    image.setUser_id(user.getUser_id());
 	    images.add(image);
 	    user.setImages(images);
 	    userRepo.save(user);
+		}
 		return imgurResponseVO;
 
-		
 	}
 
 	@Override
-	public ImgurResponseVO viewImage(String id) {
+	public ImgurResponseVO viewImage(String id) throws  UserException {
 		
 	  return imgurService.viewImage(id);
  		
 	}
-
 	@Override
-	public ImgurDeleteResponseVO deleteImage(String id) {
+	public ImgurDeleteResponseVO deleteImage(String id) throws UserException {
 
 		return imgurService.deleteImage(id);
 	}
+	
+	@Override
+	public UserInfoVO viewInfo(String userName) throws UserException {
+		
+		User user =userRepo.findByUserName(userName);
+		return prepareViewInfo(user);
+	}
+	//this method used to prepare userInfo Data
+	private UserInfoVO prepareViewInfo(User user)  {
+		
+		UserInfoVO userInfoVO = new UserInfoVO();
+		userInfoVO.setUserName(user.getUserName());
+		userInfoVO.setPhoneNumber(user.getPhoneNumber());
+		userInfoVO.setEmail(user.getEmail());
+		userInfoVO.setImages(user.getImages());
+		
+	return userInfoVO;    
+	}
+
+	
 
 }

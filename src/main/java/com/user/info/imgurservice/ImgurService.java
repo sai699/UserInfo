@@ -1,6 +1,5 @@
 package com.user.info.imgurservice;
 
-
 import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +14,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.user.info.exception.UserException;
 import com.user.info.vo.ImgurDeleteResponseVO;
 import com.user.info.vo.ImgurResponseVO;
 
@@ -25,38 +25,38 @@ public class ImgurService implements IImgurService {
 
 	@Value("${imgur.url}")
 	private String imgUrl;
-	
+
 	@Value("${imgur.upload.url}")
 	private String imgUploadUrl;
 
-	private String token = "f09a9c5bdb6b4c1d8b902a77707353e696fd38a3";
+	@Value("${imgur.auth.token}")
+	private String token;
 
 	@Override
-	public ImgurResponseVO uploadImage(MultipartFile file) {
+	public ImgurResponseVO uploadImage(MultipartFile file) throws UserException {
 		ImgurResponseVO imgurResponseVO = null;
 		try {
-		
+
 			restTemplate = new RestTemplate();
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 			headers.add("Authorization", "Bearer " + token);
 			MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-			Base64.Encoder encoder = Base64.getEncoder(); 
+			Base64.Encoder encoder = Base64.getEncoder();
 			body.add("image", encoder.encode(file.getBytes()));
-			HttpEntity<MultiValueMap<String, Object>> requestEntity
-			 = new HttpEntity<>(body, headers);
+			HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 			imgurResponseVO = restTemplate.postForObject(imgUploadUrl, requestEntity, ImgurResponseVO.class);
+		} catch (Exception e) {
+			throw new UserException(e.getMessage());
 		}
-		catch (Exception e) {
-		}
-		
+
 		return imgurResponseVO;
 
 	}
 
 	@Override
-	public ImgurResponseVO viewImage(String id) {
-		
+	public ImgurResponseVO viewImage(String id) throws UserException {
+
 		ImgurResponseVO imgurViewResponseVO = null;
 		ResponseEntity<ImgurResponseVO> response = null;
 		try {
@@ -64,22 +64,20 @@ public class ImgurService implements IImgurService {
 			HttpHeaders headers = new HttpHeaders();
 			headers.add("Authorization", "Bearer " + token);
 			HttpEntity<String> entity = new HttpEntity<>(headers);
-			response= restTemplate.exchange(imgUrl + id, HttpMethod.GET,
-					entity, ImgurResponseVO.class);
-			imgurViewResponseVO =response.getBody();
-			
+			response = restTemplate.exchange(imgUrl + id, HttpMethod.GET, entity, ImgurResponseVO.class);
+			imgurViewResponseVO = response.getBody();
+
+		} catch (Exception e) {
+			throw new UserException(e.getMessage());
 		}
-		catch (Exception e) {
-		}
-		
 		return imgurViewResponseVO;
 
 	}
 
 	@Override
-	public ImgurDeleteResponseVO deleteImage(String id) {
+	public ImgurDeleteResponseVO deleteImage(String id) throws UserException {
 		ImgurDeleteResponseVO imgurDeleteResponseVO = null;
-		
+
 		try {
 			restTemplate = new RestTemplate();
 			HttpHeaders headers = new HttpHeaders();
@@ -87,9 +85,9 @@ public class ImgurService implements IImgurService {
 			HttpEntity<String> entity = new HttpEntity<>(headers);
 			ResponseEntity<ImgurDeleteResponseVO> response = restTemplate.exchange(imgUrl + id, HttpMethod.DELETE,
 					entity, ImgurDeleteResponseVO.class);
-			imgurDeleteResponseVO =response.getBody();
+			imgurDeleteResponseVO = response.getBody();
 		} catch (Exception e) {
-
+			throw new UserException(e.getMessage());
 		}
 		return imgurDeleteResponseVO;
 

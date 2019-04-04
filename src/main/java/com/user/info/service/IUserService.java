@@ -6,12 +6,14 @@ import com.user.info.dto.UserDTO;
 import com.user.info.exception.UserException;
 import com.user.info.vo.ImgurDeleteResponseVO;
 import com.user.info.vo.ImgurResponseVO;
+import com.user.info.vo.UserInfoVO;
 
 public interface IUserService {
 
 	public void createUser(UserDTO userDTO) throws UserException;
-	public ImgurResponseVO uploadImage(MultipartFile file);
-	public ImgurResponseVO viewImage(String id);
-	public ImgurDeleteResponseVO deleteImage(String id);
+	public ImgurResponseVO uploadImage(MultipartFile file) throws UserException;
+	public ImgurResponseVO viewImage(String id) throws  UserException;
+	public ImgurDeleteResponseVO deleteImage(String id) throws UserException;
+	public UserInfoVO viewInfo(String userName) throws UserException;
 	
 }

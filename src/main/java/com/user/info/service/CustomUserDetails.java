@@ -1,12 +1,15 @@
 package com.user.info.service;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.user.info.model.Role;
 import com.user.info.model.User;
 
 import lombok.Getter;
@@ -16,12 +19,21 @@ import lombok.Setter;
 @Setter
 public class CustomUserDetails implements UserDetails {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private User user;
+	
+	
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		
-		return user.getRoles().stream().map(role-> new SimpleGrantedAuthority("role" +role)).collect(Collectors.toList());
+		
+		
+		return user.getRoles().stream().map(role-> new SimpleGrantedAuthority("role" +role.getRole())).collect(Collectors.toList());
 		 
 	}
 
@@ -34,7 +46,7 @@ public class CustomUserDetails implements UserDetails {
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return user.getPhoneNumber();
+		return user.getUserName();
 	}
 
 	@Override

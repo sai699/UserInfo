@@ -18,5 +18,6 @@ public class ImgurResponseVO implements Serializable {
 	private String success;
 	private String status;
 	
+	
 
 }
