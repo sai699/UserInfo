@@ -1,5 +1,7 @@
 package com.user.info.controller;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,7 +35,7 @@ public class UserController {
 	private UserDTO userDTO;
 
 	// this method is used to save new user details into database.
-	@PostMapping("user/create")
+	@PostMapping("/user/create")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void createUser(@Validated @RequestBody User user) throws UserException {
 
@@ -45,15 +47,16 @@ public class UserController {
 	}
 
 	// this method is used to interact with imgur API to upload image file
-	@PostMapping(value = "/image/upload")
-	public ImgurResponseVO uploadImage(@RequestParam("file") MultipartFile file) throws UserException {
-		ImgurResponseVO imgurResponseVO = userService.uploadImage(file);
+	@PostMapping(value = "/user/image/upload")
+	public ImgurResponseVO uploadImage(@RequestParam("file") MultipartFile file, Principal prinicipal)
+			throws UserException {
+		ImgurResponseVO imgurResponseVO = userService.uploadImage(file, prinicipal.getName());
 		return imgurResponseVO;
 
 	}
 
 	// this method will interact with imgur Api and used to delete image
-	@GetMapping("/image/delete/{id}")
+	@GetMapping("/user/image/delete/{id}")
 	public ImgurDeleteResponseVO deleteimage(@PathVariable("id") String id) throws UserException {
 
 		ImgurDeleteResponseVO imgurDeleteResponseVO = userService.deleteImage(id);
@@ -63,7 +66,7 @@ public class UserController {
 	}
 
 	// this method will interact with imgur Api and used to view image
-	@GetMapping("/image/view/{id}")
+	@GetMapping("/user/image/view/{id}")
 	public ImgurResponseVO viewImage(@PathVariable("id") String id) throws UserException {
 
 		ImgurResponseVO imgurViewResponseVO = userService.viewImage(id);
@@ -73,10 +76,8 @@ public class UserController {
 
 	// this method will interact with h2 DataBase and used to fetch userBasic
 	// information
-	@GetMapping("/user/viewInfo/")
-	public UserInfoVO viewInfo() throws UserException {
-
-		String userName = "sai";
+	@GetMapping("/user/viewInfo/{userName}")
+	public UserInfoVO viewInfo(@PathVariable("userName") String userName) throws UserException {
 
 		return userService.viewInfo(userName);
 

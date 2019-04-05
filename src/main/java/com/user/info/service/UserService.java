@@ -37,16 +37,16 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public ImgurResponseVO uploadImage(MultipartFile file) throws UserException {
+	public ImgurResponseVO uploadImage(MultipartFile file, String userName) throws UserException {
 		
 		User user = null;
 		ImgurResponseVO imgurResponseVO= imgurService.uploadImage(file);
 		if(imgurResponseVO.getStatus().equals(ApplicationConstants.SUCCESS_CODE)) {
-	    user =userRepo.findByUserName("sai");
+	    user =userRepo.findByUserName(userName);
 		List<Images> images= user.getImages();
 	    Images image = new Images();
 	    image.setImg_link(imgurResponseVO.getData().getLink());
-	    image.setUser_id(user.getUser_id());
+	   // image.setUser_id(user.getUser_id());
 	    images.add(image);
 	    user.setImages(images);
 	    userRepo.save(user);
@@ -80,6 +80,7 @@ public class UserService implements IUserService {
 		userInfoVO.setUserName(user.getUserName());
 		userInfoVO.setPhoneNumber(user.getPhoneNumber());
 		userInfoVO.setEmail(user.getEmail());
+		userInfoVO.setRoles(user.getRoles());
 		userInfoVO.setImages(user.getImages());
 		
 	return userInfoVO;    

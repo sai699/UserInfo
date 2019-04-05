@@ -1,15 +1,12 @@
 package com.user.info.service;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.user.info.model.Role;
 import com.user.info.model.User;
 
 import lombok.Getter;

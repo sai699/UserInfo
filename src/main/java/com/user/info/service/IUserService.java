@@ -11,7 +11,7 @@ import com.user.info.vo.UserInfoVO;
 public interface IUserService {
 
 	public void createUser(UserDTO userDTO) throws UserException;
-	public ImgurResponseVO uploadImage(MultipartFile file) throws UserException;
+	public ImgurResponseVO uploadImage(MultipartFile file, String userName) throws UserException;
 	public ImgurResponseVO viewImage(String id) throws  UserException;
 	public ImgurDeleteResponseVO deleteImage(String id) throws UserException;
 	public UserInfoVO viewInfo(String userName) throws UserException;

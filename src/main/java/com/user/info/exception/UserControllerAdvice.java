@@ -3,6 +3,7 @@ package com.user.info.exception;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.user.info.util.ApplicationConstants;
 import com.user.info.vo.ErrorVO;
